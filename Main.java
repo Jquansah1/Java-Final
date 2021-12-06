@@ -10,8 +10,10 @@ public class Main {
         String customerName;
         String validation;
         String storeOpen;
+        double total = 0;
         boolean close = false;
-        receipt r = new receipt ();
+        receipt r ;
+        ArrayList<customer> storage= new ArrayList<customer>();
         item [] snacks = new item [10];
         item item1 = new item ();
         item item2 = new item ();
@@ -67,19 +69,21 @@ public class Main {
             System.out.print("Enter CUSTOMER NAME to purchase items: ");
             customerName = input.next();
             System.out.print(customerName+" would you like to purchase an item (y/n): ");
+            r = newReceipt();
             validation = input.next();
             while (validation.equals("y")|| validation.equals("Y")) {
 
                 System.out.print("Enter Item Number from list: ");
                 snack = input.nextInt();
                 while(snack > 10 || snack < 1) {
-                    System.out.print("ERROR!!!Enter Number Corresponding to Item You'd Like to purchase from list: ");
+                    System.out.print("ERROR!!!Enter Number Corresponding to Item You'd Like to puchase from list: ");
                     snack = input.nextInt();
                 }
                 name = snacks[snack-1].itemName;
                 for (int i = 0; i < snacks.length; i++) {
                     if (name.equals(snacks[i].itemName)) {
                         r.addItem(snacks[i]);
+//						total =+ snacks[i].itemPrice;
                         System.out.println("Purchased -> "+snacks[i].itemName);
                     }
 
@@ -89,23 +93,45 @@ public class Main {
             }
             System.out.print("New Customer? (y/n): ");
             storeOpen= input.next();
+            if (storeOpen.equals("y")|| storeOpen.equals("Y")) {
+                storage.add(storeCustomer(customerName, r));
+            }
+
             System.out.println("-------------------------------------------------");
             if (storeOpen.equals("n")|| storeOpen.equals("N")) {
+                storage.add(storeCustomer(customerName, r));
                 System.out.println("END OF DAY RECEIPT: Total Sales");
                 System.out.println("=================================");
-                r.displayItems();
+                for (int i = 0; i< storage.size(); i++) {
+                    System.out.println(storage.get(i).name+" Items: ");
+                    for (int j = 0; j < storage.get(i).r.getLength(); j++) {
+                        System.out.println(storage.get(i).r.getItemName(j));
+
+                    }
+                    total += storage.get(i).r.getTotal();
+                    System.out.println("~~~~~~~~~~~~");
+                }
                 System.out.println("-------------------------------------------------");
                 System.out.print("Total Sales: $");
-                System.out.printf("%.2f",r.getTotal());
+                System.out.printf("%.2f",total);
                 close = true;
             }
+
 
         }
 
 
+    }
+    public static customer storeCustomer(String n, receipt ticket) {
+        customer c = new customer(n,ticket);
+        return c;
 
     }
-
+    public static receipt newReceipt() {
+        receipt newReceipt = new receipt();
+        return newReceipt;
+    }
 
 }
+
 
